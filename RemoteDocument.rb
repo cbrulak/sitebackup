@@ -1,3 +1,5 @@
+#Source: https://gist.github.com/jshawl/317ccdae5b4c77208bb6 and 
+
 =begin rdoc
 Wrap a URI and provide methods for download, parsing, and mirroring of remote HTML document.
 =end
@@ -147,7 +149,7 @@ to reflect the new resource location, then save the localized document.
 Creates destination directory if it does not exist.
 =end
   def save_locally(dir)
-    Dir.mkdir(dir) if (! File.exist? dir)
+    FileUtils::mkdir_p(dir) if (! File.exist? dir) #recursively make the directory
    
     # remove HTML BASE tag if it exists
     @contents.xpath('//base').each { |t| t.remove }
