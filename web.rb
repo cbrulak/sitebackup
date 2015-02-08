@@ -13,7 +13,7 @@ if ENV['ENV'] == 'prod'
 end
 
 get '/' do
-  "Learning Ruby on Heroku"
+  "backup service"
   
 end
 
@@ -22,14 +22,14 @@ post '/backup' do
   
   url = params[:url]
   
-  puts "url is " + url
-  dir = "./tmp3/" 
-  FileUtils::mkdir_p dir
+  dir = "./tmp/" 
   doc = RemoteDocument.new(URI.parse(url))
   if (doc.mirror(dir) != 0)
-    "saved " + url
+    
+    status 200
   else
-    "error downloading " + url
+    
+    status 400
   end
   
 end
