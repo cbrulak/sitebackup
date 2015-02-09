@@ -1,5 +1,16 @@
+require 'resque/errors'
+
+module RetriedJob
+  def on_failure_retry(e, *args)
+    puts "Performing #{self} caused an exception (#{e}). Retrying..."
+    $stdout.flush
+    Resque.enqueue self, *args
+  end
+end
+
 #from http://avi.io/blog/2013/12/03/upload-folder-to-s3-recursively
 class S3FolderUpload
+  extend RetriedJob
     attr_reader :folder_path, :total_files, :s3_bucket
     attr_accessor :files
 
@@ -20,6 +31,13 @@ class S3FolderUpload
       @connection        = AWS::S3::Base.establish_connection!(access_key_id: aws_key, secret_access_key: aws_secret)
       @s3_bucket         = bucket
     end
+
+    def self.perform(key)
+        upload!
+      rescue Resque::TermException
+        Resque.enqueue(self, key)
+      end
+    
 
     # public: Upload files from the folder to S3
     #

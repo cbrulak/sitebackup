@@ -8,6 +8,17 @@ require 'pry'
 require 'aws/s3'
 require_relative 'S3FolderUpload.rb'
 require 'logger'
+require 'bundler/setup'
+Bundler.require(:default)
+require 'sinatra/redis'
+
+configure do
+  redis_url = ENV["REDISCLOUD_URL"] || ENV["OPENREDIS_URL"] || ENV["REDISGREEN_URL"] || ENV["REDISTOGO_URL"]
+  uri = URI.parse(redis_url)
+  Resque.redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+  Resque.redis.namespace = "resque:example"
+  set :redis, redis_url
+end
 
 
 use Rack::Auth::Basic, "Restricted Area" do |username, password|
@@ -27,16 +38,19 @@ post '/backup' do
   doc = RemoteDocument.new(URI.parse(url))
   fileName = doc.mirror(dir)
   puts "file is " + fileName
-  if (!fileName.nil?)
+  
+  Resque.enqueue(S3FolderUpload, fileName)
+  
+#  if (!fileName.nil?)
      status 200
     #upload(fileName,dir)
-    uploader = S3FolderUpload.new(dir, ENV['BUCKET_NAME'], ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY'])
-    uploader.upload!
-    status 200
-  else
+ #   uploader = S3FolderUpload.new(dir, ENV['BUCKET_NAME'], ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY'])
+   # uploader.upload!
+  #  status 200
+  #else
     
-    status 400
-  end
+   # status 400
+  #end
   
 end
 
