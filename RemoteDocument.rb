@@ -164,5 +164,6 @@ Creates destination directory if it does not exist.
     save_path = File.join(dir, File.basename(uri.to_s))
     save_path += '.html' if save_path !~ /\.((html?)|(txt))$/
     File.open(save_path, 'w') { |f| f.write(@contents.to_html) }
+    save_path
   end
 end
