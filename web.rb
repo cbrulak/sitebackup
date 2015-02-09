@@ -7,6 +7,7 @@ require 'fileutils'
 require 'pry'
 require 'aws/s3'
 require_relative 'S3FolderUpload.rb'
+require 'logger'
 
 enable :logging
 
