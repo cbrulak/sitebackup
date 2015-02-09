@@ -20,22 +20,22 @@ get '/' do
 end
 
 post '/backup' do
-  
+  puts ENV.inspect
   url = params[:url]
   puts "url is " + url
   dir = "./tmp/" 
   doc = RemoteDocument.new(URI.parse(url))
   fileName = doc.mirror(dir)
   puts "file is " + fileName
-  #if (!fileName.nil?)
+  if (!fileName.nil?)
     #upload(fileName,dir)
     uploader = S3FolderUpload.new(dir, ENV['BUCKET_NAME'], ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY'])
     uploader.upload!
     status 200
-    #else
+  else
     
-    #status 400
-    #end
+    status 400
+  end
   
 end
 
