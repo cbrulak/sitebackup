@@ -10,12 +10,12 @@ require_relative 'S3FolderUpload.rb'
 
 enable :logging
 
-use Rack::Auth::Basic, "Restricted Area" do |username, password|
-    username == ENV['username'] && password == ENV['password']
-end
-
 before do
   logger.level = Logger::DEBUG
+end
+
+use Rack::Auth::Basic, "Restricted Area" do |username, password|
+    username == ENV['username'] && password == ENV['password']
 end
 
 get '/' do
