@@ -23,7 +23,7 @@ end
 configure do
   # logging is enabled by default in classic style applications,
   # so `enable :logging` is not needed
-  FileUtils::mkdir_p log
+  FileUtils::mkdir_p "log"
   
   file = File.new("./log/#{settings.environment}.log", 'a+')
   file.sync = true
