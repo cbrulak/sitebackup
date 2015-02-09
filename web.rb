@@ -14,9 +14,9 @@ before do
   logger.level = Logger::DEBUG
 end
 
-use Rack::Auth::Basic, "Restricted Area" do |username, password|
-    username == ENV['username'] && password == ENV['password']
-end
+#use Rack::Auth::Basic, "Restricted Area" do |username, password|
+#    username == ENV['username'] && password == ENV['password']
+#end
 
 get '/' do
   logger.debug "Handling 'hello world' request."
