@@ -8,7 +8,7 @@ require 'pry'
 require 'aws/s3'
 require_relative 'S3FolderUpload.rb'
 
-if ENV['ENV'] == 'prod'
+if ENV['ENV'] == 'production'
   use Rack::Auth::Basic, "Restricted Area" do |username, password|
     username == ENV['username'] && password == ENV['password']
   end
@@ -38,6 +38,7 @@ post '/backup' do
   dir = "./tmp/" 
   doc = RemoteDocument.new(URI.parse(url))
   fileName = doc.mirror(dir)
+  puts "file is " + fileName
   if (!fileName.nil?)
     #upload(fileName,dir)
     uploader = S3FolderUpload.new(dir, ENV['BUCKET_NAME'], ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY'])
