@@ -22,7 +22,7 @@ end
 post '/backup' do
   
   url = params[:url]
-  
+  puts "url is " + url
   dir = "./tmp/" 
   doc = RemoteDocument.new(URI.parse(url))
   fileName = doc.mirror(dir)
