@@ -9,18 +9,13 @@ require 'aws/s3'
 require_relative 'S3FolderUpload.rb'
 require 'logger'
 
-enable :logging
-
-before do
-  logger.level = Logger::DEBUG
-end
 
 #use Rack::Auth::Basic, "Restricted Area" do |username, password|
 #    username == ENV['username'] && password == ENV['password']
 #end
 
 get '/' do
-  logger.debug "Handling 'hello world' request."
+  puts "Handling 'hello world' request."
   "backup service"  
 end
 
