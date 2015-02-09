@@ -8,28 +8,13 @@ require 'pry'
 require 'aws/s3'
 require_relative 'S3FolderUpload.rb'
 
-if ENV['ENV'] == 'production'
-  use Rack::Auth::Basic, "Restricted Area" do |username, password|
+use Rack::Auth::Basic, "Restricted Area" do |username, password|
     username == ENV['username'] && password == ENV['password']
-  end
 end
 
 get '/' do
-  "backup service"
-  
+  "backup service"  
 end
-
-
-configure do
-  # logging is enabled by default in classic style applications,
-  # so `enable :logging` is not needed
-  FileUtils::mkdir_p "log"
-  
-  file = File.new("./log/#{settings.environment}.log", 'a+')
-  file.sync = true
-  use Rack::CommonLogger, file
-end
-
 
 post '/backup' do
   
@@ -39,15 +24,15 @@ post '/backup' do
   doc = RemoteDocument.new(URI.parse(url))
   fileName = doc.mirror(dir)
   puts "file is " + fileName
-  if (!fileName.nil?)
+  #if (!fileName.nil?)
     #upload(fileName,dir)
     uploader = S3FolderUpload.new(dir, ENV['BUCKET_NAME'], ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY'])
     uploader.upload!
     status 200
-  else
+    #else
     
-    status 400
-  end
+    #status 400
+    #end
   
 end
 
